@@ -351,6 +351,7 @@ function buildTags() {
     const dot = document.createElement('div'); dot.className = 'tag-anchor';
     const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
     line.setAttribute('stroke', 'currentColor'); line.setAttribute('stroke-width', '1'); line.style.color = 'var(--ink-3)';
+    [el, dot, line].forEach(x => { x.style.visibility = 'hidden'; });
     tagsEl.appendChild(dot); tagsEl.appendChild(el); linesEl.appendChild(line);
     tagEls.push({ p, el, dot, line, w: 0, h: 0 });
   });
@@ -384,6 +385,7 @@ function updateTags() {
     ty = clamp(ty, 4, Math.max(4, H - t.h - 4));
     placed.push({ x: tx, y: ty, w: t.w, h: t.h });
     t.el.style.display = ''; t.dot.style.display = ''; t.line.style.display = '';
+    t.el.style.visibility = t.dot.style.visibility = t.line.style.visibility = 'visible';
     t.el.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px)`;
     t.dot.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
     const lx = tx > x ? tx : tx + t.w, ly = ty + t.h / 2;
