@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Actuator Atlas</title>
+<meta name="description" content="Interactive 3D atlas of robot and industrial actuators: QDD, strain wave, cycloidal, planetary, worm, series elastic, ball and roller screws, hydraulics. Watch the gears mesh, cut them open, and run the numbers.">
+<meta name="theme-color" content="#0C1014">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Actuator Atlas">
+<meta property="og:title" content="Actuator Atlas: how robot actuators actually work">
+<meta property="og:description" content="Interactive 3D atlas of robot and industrial actuators: QDD, strain wave, cycloidal, planetary, worm, series elastic, ball and roller screws, hydraulics. Watch the gears mesh, cut them open, and run the numbers.">
+<meta property="og:url" content="https://zerotimedrift.github.io/actuator-atlas/">
+<meta property="og:image" content="https://zerotimedrift.github.io/actuator-atlas/media/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Actuator Atlas: how robot actuators actually work">
+<meta name="twitter:description" content="Interactive 3D atlas of robot and industrial actuators: QDD, strain wave, cycloidal, planetary, worm, series elastic, ball and roller screws, hydraulics. Watch the gears mesh, cut them open, and run the numbers.">
+<meta name="twitter:image" content="https://zerotimedrift.github.io/actuator-atlas/media/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath fill='%23E8590C' d='M14 2h4l.7 3.6 2.6 1.1 3-2.1 2.9 2.9-2.1 3 1.1 2.6L30 14v4l-3.6.7-1.1 2.6 2.1 3-2.9 2.9-3-2.1-2.6 1.1L18 30h-4l-.7-3.6-2.6-1.1-3 2.1-2.9-2.9 2.1-3-1.1-2.6L2 18v-4l3.6-.7 1.1-2.6-2.1-3 2.9-2.9 3 2.1 2.6-1.1z'/%3E%3Ccircle cx='16' cy='16' r='5' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,500..800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">Actuator <span>Atlas</span></div>
+      <div class="brand-sub">gears · torque · rotation · force</div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab" role="tab" id="tab-lab" aria-selected="true" data-view="lab">Lab</button>
+      <button class="tab" role="tab" id="tab-compare" aria-selected="false" data-view="compare">Compare</button>
+      <button class="tab" role="tab" id="tab-concepts" aria-selected="false" data-view="concepts">Concepts</button>
+    </nav>
+  </header>
+
+  <main class="view" id="view-lab" role="tabpanel" aria-labelledby="tab-lab">
+    <div class="lab">
+      <nav class="rail" id="rail" aria-label="Actuators"></nav>
+
+      <div class="stage-wrap">
+        <div class="stage" id="stage">
+          <div class="tags" id="tags"><svg id="tag-lines" aria-hidden="true"></svg></div>
+          <div class="stage-title">
+            <div class="stage-kicker" id="st-kicker"></div>
+            <h1 class="stage-name" id="st-name"></h1>
+            <p class="stage-tagline" id="st-tagline"></p>
+            <div class="legend" id="st-legend"></div>
+          </div>
+          <div class="hud" id="hud" aria-live="polite"></div>
+          <div class="tooltip" id="tooltip" hidden></div>
+          <div class="hint" id="hint">Drag to orbit · scroll to zoom · hover a part</div>
+        </div>
+        <div class="controls" id="controls">
+          <div class="ctl-group">
+            <button class="icon-btn primary" id="btn-play" aria-label="Pause animation" title="Play / pause (space)">
+              <svg viewBox="0 0 16 16" fill="currentColor" id="ico-play"><rect x="3.5" y="3" width="3" height="10" rx="0.6"/><rect x="9.5" y="3" width="3" height="10" rx="0.6"/></svg>
+            </button>
+            <label class="ctl-label" for="rng-speed">Speed</label>
+            <input type="range" id="rng-speed" min="0" max="100" value="50" aria-label="Animation speed">
+          </div>
+          <div class="ctl-sep"></div>
+          <div class="ctl-group">
+            <label class="ctl-label" for="rng-explode">Explode</label>
+            <input type="range" id="rng-explode" min="0" max="100" value="0" aria-label="Exploded view amount">
+          </div>
+          <div class="ctl-sep"></div>
+          <div class="ctl-group">
+            <button class="icon-btn" id="btn-cut" aria-pressed="false" title="Quarter-section cutaway">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8 2a6 6 0 1 0 6 6H8z"/><path d="M10 1.8V6h4.2" opacity=".55"/></svg>Cutaway
+            </button>
+            <button class="icon-btn" id="btn-labels" aria-pressed="true" title="Part labels">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 3.5h7l4 4.5-4 4.5h-7z"/><circle cx="5.5" cy="8" r="1" fill="currentColor"/></svg>Labels
+            </button>
+            <button class="icon-btn" id="btn-pitch" aria-pressed="false" title="Pitch circles and line of action">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 1.6"><circle cx="5.5" cy="8" r="3.5"/><circle cx="11.5" cy="8" r="2.5"/></svg>Pitch
+            </button>
+            <button class="icon-btn" id="btn-reset" title="Reset camera">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 8a5 5 0 1 0 1.6-3.7"/><path d="M3 2.5v3h3"/></svg>View
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="sheet" aria-label="Datasheet">
+        <div class="sheet-tabs" role="tablist" aria-label="Datasheet sections">
+          <button class="sheet-tab" role="tab" aria-selected="true" data-sheet="overview">How it works</button>
+          <button class="sheet-tab" role="tab" aria-selected="false" data-sheet="calc">Calculate</button>
+          <button class="sheet-tab" role="tab" aria-selected="false" data-sheet="uses">Where it's used</button>
+        </div>
+        <div class="sheet-body" id="sheet-body"></div>
+      </aside>
+    </div>
+  </main>
+
+  <main class="view doc" id="view-compare" role="tabpanel" aria-labelledby="tab-compare" hidden>
+    <div class="doc-inner" id="compare-root"></div>
+  </main>
+
+  <main class="view doc" id="view-concepts" role="tabpanel" aria-labelledby="tab-concepts" hidden>
+    <div class="doc-inner" id="concepts-root"></div>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/environments/RoomEnvironment.js"></script>
+<script src="js/content.js"></script>
+<script src="js/core.js"></script>
+<script src="js/mechs.js"></script>
+<script src="js/views.js"></script>
+</body>
+</html>
